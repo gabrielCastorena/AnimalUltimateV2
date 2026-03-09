@@ -16,5 +16,5 @@ MonoBehaviour:
   characterSprite: {fileID: 21300000, guid: 2813343dff714f7469310a17de8141c6, type: 3}
   tipoHabilidad: 0
   abilityPrefab: {fileID: 3253973369163252545, guid: 9106fa75614f06c49a62ab5b75d1a1c5, type: 3}
-  abilityForce: 10
+  abilityForce: 6
   abilityDuration: 3

@@ -767,10 +767,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerID: 1
-  moveSpeed: 5
-  jumpForce: 10
-  knockbackDuration: 0.3
-  spinForce: 15
+  moveSpeed: 4
+  jumpForce: 7
+  knockbackDuration: 2
+  spinForce: 20
 --- !u!61 &1145224223
 BoxCollider2D:
   m_ObjectHideFlags: 0

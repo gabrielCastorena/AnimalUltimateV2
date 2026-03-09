@@ -6,10 +6,10 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpForce = 10f;
 
-    // --- VARIABLES PARA EL EMPUJE Y GIRO ---
-    public float knockbackDuration = 0.3f; 
+    [Header("Duck Game Knockback")]
+    public float knockbackDuration = 1.5f; // Tiempo que pasa tirado en el piso
     private float knockbackCounter = 0f;   
-    public float spinForce = 15f; // NUEVO: Qué tan rápido va a girar en el aire
+    public float spinForce = 500f; // Fuerza masiva para que gire como loco
 
     private Rigidbody2D rb;
     private PlayerAbility abilities;
@@ -23,24 +23,27 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        // Si el contador es mayor a cero, el jugador está aturdido/volando
         if (knockbackCounter > 0)
         {
             knockbackCounter -= Time.deltaTime;
 
-            // NUEVO: Cuando se le pasa el aturdimiento, lo enderezamos
+            // Si ya se acabó el tiempo de aturdimiento, se levanta
             if (knockbackCounter <= 0)
             {
-                transform.rotation = Quaternion.identity; // Lo pone derechito al instante
-                rb.constraints = RigidbodyConstraints2D.FreezeRotation; // Le vuelve a poner el candado para que camine normal
+                transform.rotation = Quaternion.identity; // Lo pone derecho
+                rb.angularVelocity = 0f;                  // Frena el giro en seco
+                rb.velocity = Vector2.zero;               // Lo frena para que no resbale
+                rb.freezeRotation = true;                 // Vuelve a bloquear la rotación
             }
         }
         else
         {
-            Move(); // Solo se mueve si no está aturdido
+            // Solo puede moverse, saltar y disparar si NO está volando/aturdido
+            Move();
+            Jump();
+            UseAbility();
         }
-
-        Jump();
-        UseAbility();
     }
 
     void Move()
@@ -99,19 +102,18 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // --- FUNCIÓN ACTUALIZADA PARA RECIBIR EL IMPACTO Y GIRAR ---
     public void ApplyKnockback(Vector2 force)
     {
         knockbackCounter = knockbackDuration; 
-        rb.velocity = Vector2.zero;           
+        rb.velocity = Vector2.zero; // Frena su movimiento antes de volar
         
-        // 1. Le quitamos el candado de rotación Z para que las físicas lo dejen girar
-        rb.constraints = RigidbodyConstraints2D.None;
+        // Magia Duck Game: Quitamos el candado de rotación
+        rb.freezeRotation = false;
         
-        // 2. Lo mandamos a volar
+        // Lo mandamos a volar
         rb.AddForce(force, ForceMode2D.Impulse); 
         
-        // 3. Le aplicamos una fuerza de rotación (Torque) aleatoria (a veces gira a la derecha, a veces a la izquierda)
+        // Lo hacemos girar dándole torque a la izquierda o derecha al azar
         float randomSpin = Random.Range(-spinForce, spinForce);
         rb.AddTorque(randomSpin, ForceMode2D.Impulse);
     }
