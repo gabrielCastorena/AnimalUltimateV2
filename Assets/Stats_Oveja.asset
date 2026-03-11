@@ -15,6 +15,6 @@ MonoBehaviour:
   animalName: Arnold
   characterSprite: {fileID: 21300000, guid: dc5fc15f2d78aea4db664497e23e46dc, type: 3}
   tipoHabilidad: 1
-  abilityPrefab: {fileID: 7348417871288385372, guid: 0d6fca3035b992373956788fabc4e263, type: 3}
+  abilityPrefab: {fileID: 3398742490225153947, guid: cbe7fefeba62242ee9a36d1fd6e8224c, type: 3}
   abilityForce: 10
-  abilityDuration: 3
+  abilityDuration: 8

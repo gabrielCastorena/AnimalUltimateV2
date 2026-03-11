@@ -162,5 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifeTime: 2
-  explosionRadius: 5
-  explosionForce: 6
+  explosionRadius: 2
+  explosionForce: 3
+  horizontalBias: 3
+  verticalBump: 0.5

@@ -3,29 +3,33 @@ using UnityEngine;
 public class Egg : MonoBehaviour
 {
     [Header("Ajustes de la Explosión")]
-    public float lifeTime = 3f;           // Tiempo límite por si no choca con nadie
-    public float explosionRadius = 2.5f;  
-    public float explosionForce = 25f;    // Fuerza masiva para que salgan volando
+    public float lifeTime = 3f;
+    public float explosionRadius = 2.5f;
+    public float explosionForce = 25f;
+
+    [Header("Duck Game Dirección")]
+    [Tooltip("Cuánto se amplifica el componente horizontal. Más alto = más parecido a Duck Game.")]
+    public float horizontalBias = 3f;
+    [Tooltip("Bump vertical fijo para despegar del suelo. Pequeño pero siempre presente.")]
+    public float verticalBump = 0.5f;
 
     void Start()
     {
         Invoke("Explode", lifeTime);
     }
 
-    // Si tu huevo tiene "Is Trigger" marcado en Unity:
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") || collision.CompareTag("Shield"))
         {
-            CancelInvoke("Explode"); // Cancela la cuenta regresiva
-            Explode();               // Explota instantáneamente
+            CancelInvoke("Explode");
+            Explode();
         }
     }
 
-    // Si tu huevo NO tiene "Is Trigger" y rebota de forma normal:
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Shield"))
         {
             CancelInvoke("Explode");
             Explode();
@@ -39,20 +43,27 @@ public class Egg : MonoBehaviour
         foreach (Collider2D obj in objectsInRadius)
         {
             PlayerMovement player = obj.GetComponent<PlayerMovement>();
-            
-            if (player != null)
+            if (player == null) continue;
+
+            PlayerAbility ability = obj.GetComponent<PlayerAbility>();
+            if (ability != null && ability.isShieldActive)
             {
-                Vector2 direction = (obj.transform.position - transform.position).normalized;
-                
-                // Forzamos a que siempre salgan impulsados MUCHO hacia arriba (Arco dramático)
-                direction.y = Mathf.Abs(direction.y) + 1.5f; 
-                
-                player.ApplyKnockback(direction.normalized * explosionForce);
+                Debug.Log(obj.name + ": ¡La burbuja absorbió el impacto!");
+                continue;
             }
+
+            float dirX = obj.transform.position.x - transform.position.x;
+            float horizontalComponent = Mathf.Abs(dirX) < 0.1f
+                ? (Random.value > 0.5f ? 1f : -1f)
+                : Mathf.Sign(dirX);
+
+            Vector2 duckDir = new Vector2(horizontalComponent * horizontalBias, verticalBump);
+            player.ApplyKnockback(duckDir.normalized * explosionForce);
         }
 
         Destroy(gameObject);
     }
+    
 
     private void OnDrawGizmosSelected()
     {

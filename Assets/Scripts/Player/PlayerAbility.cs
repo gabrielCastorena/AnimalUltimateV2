@@ -8,7 +8,9 @@ public class PlayerAbility : MonoBehaviour
 
     [Header("Puntos de Referencia")]
     public Transform firePoint;   // De donde sale el huevo
-    public Transform shieldPoint; // Donde aparece el escudo
+    public Transform shieldPoint; // Referencia opcional para el offset Y del escudo
+
+    public bool isShieldActive = false;
 
     private bool abilityInUse = false;
     private Rigidbody2D rb;
@@ -81,15 +83,16 @@ public class PlayerAbility : MonoBehaviour
     IEnumerator SheepAbility()
     {
         abilityInUse = true;
+        isShieldActive = true;
 
         activeObject = Instantiate(currentAnimal.abilityPrefab, shieldPoint.position, Quaternion.identity, transform);
 
-        // Usamos la duración configurada en la tarjeta
         yield return new WaitForSeconds(currentAnimal.abilityDuration);
 
         if (activeObject != null)
             Destroy(activeObject);
 
+        isShieldActive = false;
         abilityInUse = false;
     }
 
