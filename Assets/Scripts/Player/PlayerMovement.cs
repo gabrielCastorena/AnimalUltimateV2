@@ -75,10 +75,13 @@ public class PlayerMovement : MonoBehaviour
 
         rb.velocity= new Vector2(moveInput * moveSpeed, rb.velocity.y);
 
+        // Usamos localScale.y como referencia de tamaño actual (nunca cambia de signo).
+        // Así la rata encogida sigue siendo pequeña al moverse, y la escala normal es 1.
+        float s = transform.localScale.y;
         if (moveInput > 0)
-            transform.localScale = new Vector3(1, 1, 1);
+            transform.localScale = new Vector3(s, s, transform.localScale.z);
         else if (moveInput < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new Vector3(-s, s, transform.localScale.z);
     }
 
     void Jump()

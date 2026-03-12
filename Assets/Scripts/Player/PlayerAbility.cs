@@ -100,11 +100,17 @@ public class PlayerAbility : MonoBehaviour
     {
         abilityInUse = true;
 
-        transform.localScale = originalScale * 0.5f;
+        // Leemos el signo actual de X para saber hacia dónde mira el personaje (1 = derecha, -1 = izquierda).
+        // Multiplicamos por 0.5 para encoger SIN cambiar la dirección del sprite.
+        float signX = Mathf.Sign(transform.localScale.x);
+        float smallScale = originalScale.y * 0.5f;
+        transform.localScale = new Vector3(signX * smallScale, smallScale, originalScale.z);
 
         yield return new WaitForSeconds(currentAnimal.abilityDuration);
 
-        transform.localScale = originalScale;
+        // Volvemos al tamaño original. Releemos el signo por si el jugador giró mientras era pequeño.
+        signX = Mathf.Sign(transform.localScale.x);
+        transform.localScale = new Vector3(signX * originalScale.y, originalScale.y, originalScale.z);
 
         abilityInUse = false;
     }
@@ -112,14 +118,20 @@ public class PlayerAbility : MonoBehaviour
     IEnumerator FishAbility()
     {
         abilityInUse = true;
-        float timer = 0f;
 
+        float savedGravityScale = rb.gravityScale;
+        rb.gravityScale = 0f; // Desactivamos la gravedad para que la fuerza ascendente sea precisa
+
+        float timer = 0f;
         while (timer < currentAnimal.abilityDuration)
         {
             rb.velocity = new Vector2(rb.velocity.x, currentAnimal.abilityForce);
             timer += Time.deltaTime;
             yield return null;
         }
+
+        rb.gravityScale = savedGravityScale;
+        rb.velocity = new Vector2(rb.velocity.x, 0f); // Limpiamos la velocidad vertical para una caída natural
 
         abilityInUse = false;
     }

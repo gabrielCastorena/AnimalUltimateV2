@@ -531,7 +531,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ab161367b736f045ae26791fb9c8a99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentAnimal: {fileID: 11400000, guid: 643dbb36854f7a9e1a383c9152e2806c, type: 2}
+  currentAnimal: {fileID: 11400000, guid: f690ec4d671ac6759b4d90e168ba8da0, type: 2}
   firePoint: {fileID: 6599888}
   shieldPoint: {fileID: 1545576993}
   isShieldActive: 0
@@ -985,7 +985,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ab161367b736f045ae26791fb9c8a99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentAnimal: {fileID: 11400000, guid: 74585237206f95704952151d964aa1ce, type: 2}
+  currentAnimal: {fileID: 11400000, guid: 113bb7bc5f4281200a3d1ab47c708f68, type: 2}
   firePoint: {fileID: 1020565329}
   shieldPoint: {fileID: 1186648211}
   isShieldActive: 0
