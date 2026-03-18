@@ -23,11 +23,15 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private PlayerAbility abilities;
     private bool isGrounded;
+    
+    private Animator anim; // NUEVO: La variable para guardar tu cerebro de animación
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         abilities = GetComponent<PlayerAbility>();
+        anim = GetComponent<Animator>(); // NUEVO: Conectamos el componente
+        
         originalAngularDrag = rb.angularDrag;
         originalGravityScale = rb.gravityScale;
     }
@@ -38,12 +42,15 @@ public class PlayerMovement : MonoBehaviour
         if (knockbackCounter > 0)
         {
             knockbackCounter -= Time.deltaTime;
+            
+            // NUEVO: Si está volando por un golpe, apagamos la animación de caminar
+            if (anim != null) anim.SetBool("isWalking", false); 
 
             if (knockbackCounter <= 0)
             {
                 transform.rotation = Quaternion.identity;
                 rb.angularVelocity = 0f;
-                rb.velocity= Vector2.zero;
+                rb.velocity = Vector2.zero;
                 rb.freezeRotation = true;
                 rb.angularDrag = originalAngularDrag;
                 rb.gravityScale = originalGravityScale;
@@ -73,15 +80,20 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.RightArrow)) moveInput = 1;
         }
 
-        rb.velocity= new Vector2(moveInput * moveSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
 
-        // Usamos localScale.y como referencia de tamaño actual (nunca cambia de signo).
-        // Así la rata encogida sigue siendo pequeña al moverse, y la escala normal es 1.
-        float s = transform.localScale.y;
+        // Usamos localScale.y como referencia de tamaño actual.
+        float s = Mathf.Abs(transform.localScale.y); 
         if (moveInput > 0)
             transform.localScale = new Vector3(s, s, transform.localScale.z);
         else if (moveInput < 0)
             transform.localScale = new Vector3(-s, s, transform.localScale.z);
+
+        // NUEVO: Encender o apagar la animación dependiendo de si hay input
+        if (anim != null)
+        {
+            anim.SetBool("isWalking", moveInput != 0);
+        }
     }
 
     void Jump()
@@ -90,14 +102,14 @@ public class PlayerMovement : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
             {
-                rb.velocity= new Vector2(rb.velocity.x, jumpForce);
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             }
         }
         else if (playerID == 2)
         {
             if (Input.GetKeyDown(KeyCode.RightShift) && isGrounded)
             {
-                rb.velocity= new Vector2(rb.velocity.x, jumpForce);
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             }
         }
     }
@@ -117,25 +129,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Punto de entrada único para knockback. Funciona igual para todos los animales
-    /// que tengan este componente (pollo, oveja, rata, pez, etc.).
-    /// </summary>
     public void ApplyKnockback(Vector2 force)
     {
         knockbackCounter = knockbackDuration;
-        rb.velocity= Vector2.zero;
+        rb.velocity = Vector2.zero;
         rb.freezeRotation = false;
 
-        // Gravedad aumentada = sensación de peso al volar (no flotan como globos)
         rb.gravityScale = gravityScaleOnKnockback;
-        // Angular drag alto = el giro se frena solo en el aire (efecto ragdoll cómico)
         rb.angularDrag = angularDragOnKnockback;
 
         rb.AddForce(force, ForceMode2D.Impulse);
 
-        // Torque direccional: lanzado a la derecha → gira en sentido horario, y viceversa.
-        // Esto genera poses de aterrizaje variadas y naturales, nunca un trompo infinito.
         float torqueDirection = -Mathf.Sign(force.x);
         rb.AddTorque(torqueDirection * spinForce, ForceMode2D.Impulse);
     }
