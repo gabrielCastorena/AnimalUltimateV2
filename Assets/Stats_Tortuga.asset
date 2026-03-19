@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4f84dcde7844f442bd7b50cbd3ca251, type: 3}
-  m_Name: Stats_Rata
+  m_Name: Stats_Tortuga
   m_EditorClassIdentifier: 
-  animalName: Rata
+  animalName: Tortuga
   characterSprite: {fileID: 21300000, guid: 634ad0f1b05586f4faf0522fd2ada53f, type: 3}
   tipoHabilidad: 2
   abilityPrefab: {fileID: 0}
