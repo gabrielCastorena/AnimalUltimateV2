@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9081115870529858824}
   - component: {fileID: 8231258208903822508}
-  - component: {fileID: 1594420902243244797}
   - component: {fileID: 4959672995300775909}
+  - component: {fileID: 2027683235617215352}
   m_Layer: 0
   m_Name: bumerang
   m_TagString: Untagged
@@ -86,19 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1594420902243244797
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5368410999448209617}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e73a81bf9473af3db7ab2e3e75d4ece, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nombreArma: "Arma Gen\xE9rica"
 --- !u!61 &4959672995300775909
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -144,3 +131,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2027683235617215352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5368410999448209617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 593bd5ac6b860f2878fa088f74065eb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tipo: 0
+  nombreArma: "Arma Gen\xE9rica"
+  usosMaximos: 3
+  velocidadLanzamiento: 15
+  tiempoDeIda: 0.4
+  velocidadGiro: 800
+  radioGolpe: 1.2
+  duracionError: 3
+  fuerzaGolpe: 20

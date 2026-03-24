@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4f84dcde7844f442bd7b50cbd3ca251, type: 3}
+  m_Script: {fileID: 11500000, guid: cdf1eb8d18832b97fa7217b70c68cb64, type: 3}
   m_Name: Stats_Pollo
   m_EditorClassIdentifier: 
-  animalName: Gunther
+  animalName: Pollo
   characterSprite: {fileID: 21300000, guid: 5d913f542e898a2a198e12c2c7f74bf9, type: 3}
   tipoHabilidad: 0
   abilityPrefab: {fileID: 3253973369163252545, guid: 9106fa75614f06c49a62ab5b75d1a1c5, type: 3}
-  abilityForce: 6
+  abilityForce: 10
   abilityDuration: 3

@@ -90,7 +90,6 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.RightArrow)) moveInput = 1;
         }
 
-        // Si tiene el error del mazo, se invierten los controles
         if (tiempoError > 0) moveInput *= -1; 
     }
 

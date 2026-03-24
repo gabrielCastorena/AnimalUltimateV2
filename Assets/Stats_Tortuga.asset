@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4f84dcde7844f442bd7b50cbd3ca251, type: 3}
+  m_Script: {fileID: 11500000, guid: cdf1eb8d18832b97fa7217b70c68cb64, type: 3}
   m_Name: Stats_Tortuga
   m_EditorClassIdentifier: 
   animalName: Tortuga
@@ -17,4 +17,4 @@ MonoBehaviour:
   tipoHabilidad: 2
   abilityPrefab: {fileID: 0}
   abilityForce: 10
-  abilityDuration: 5
+  abilityDuration: 3

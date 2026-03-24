@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8191444562943462904}
   - component: {fileID: 6967528340046300181}
   - component: {fileID: 685843525082445000}
-  - component: {fileID: 704420916787395542}
+  - component: {fileID: 4544424067466001265}
   m_Layer: 0
   m_Name: MazoError
   m_TagString: Untagged
@@ -131,7 +131,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &704420916787395542
+--- !u!114 &4544424067466001265
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6149612710975252559}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e73a81bf9473af3db7ab2e3e75d4ece, type: 3}
+  m_Script: {fileID: 11500000, guid: 593bd5ac6b860f2878fa088f74065eb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   tipo: 1
@@ -150,5 +150,5 @@ MonoBehaviour:
   tiempoDeIda: 0.4
   velocidadGiro: 800
   radioGolpe: 1.2
-  duracionError: 5
-  fuerzaGolpe: 2
+  duracionError: 3
+  fuerzaGolpe: 20

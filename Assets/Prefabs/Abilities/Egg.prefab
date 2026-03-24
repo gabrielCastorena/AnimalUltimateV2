@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7143326871969280607}
   - component: {fileID: 9050382460957868441}
   - component: {fileID: 4651870471041624079}
-  - component: {fileID: -8375633915248997570}
+  - component: {fileID: 7308722930782221787}
   m_Layer: 0
   m_Name: Egg
   m_TagString: Untagged
@@ -149,7 +149,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &-8375633915248997570
+--- !u!114 &7308722930782221787
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,11 +158,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3253973369163252545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89d39fa6b077c054fb429677412a538a, type: 3}
+  m_Script: {fileID: 11500000, guid: bedf4191dd5f217f0a958e495b761c42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifeTime: 2
-  explosionRadius: 2
-  explosionForce: 0.5
+  lifeTime: 3
+  explosionRadius: 2.5
+  explosionForce: 6
   horizontalBias: 3
   verticalBump: 0.5
