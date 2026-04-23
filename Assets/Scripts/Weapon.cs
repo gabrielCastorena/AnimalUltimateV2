@@ -1,82 +1,54 @@
 using UnityEngine;
-using System.Collections;
 
-public enum TipoDeArma { Bumeran, MazoError }
-
-public class Weapon : MonoBehaviour
+// Al ser abstracta, dicta las reglas, pero las hijas hacen el trabajo sucio
+public abstract class Weapon : MonoBehaviour
 {
-    [Header("Tipo de Arma")]
-    public TipoDeArma tipo = TipoDeArma.Bumeran;
-    public string nombreArma = "Arma Genérica";
-    public int usosMaximos = 3; 
+    [Header("Estadísticas Base")]
+    public WeaponStats stats; // Aquí conectaremos el ScriptableObject
 
-    [Header("Ajustes: Bumerán")]
-    public float velocidadLanzamiento = 15f;
-    public float tiempoDeIda = 0.4f;
-    public float velocidadGiro = 800f;
-
-    [Header("Ajustes: Mazo Error (Melee)")]
-    public float radioGolpe = 1.2f;      
-    public float duracionError = 3f;     
-
-    [Header("Impacto General")]
-    public float fuerzaGolpe = 20f;
-
-    private int usosRestantes;  
-    private bool haSidoRecogida = false;
-    private bool estaAtacando = false; 
+    // Las variables son 'protected' para que solo las clases hijas (bumerán/mazo) puedan usarlas
+    protected int usosRestantes;  
+    protected bool haSidoRecogida = false;
+    protected bool estaAtacando = false; 
     
-    private Collider2D col;
-    private Rigidbody2D rb;
-    private Transform manoDelJugador;
-    private PlayerCombat dueño;
+    protected Collider2D col;
+    protected Rigidbody2D rb;
+    protected Transform manoDelJugador;
+    protected PlayerCombat dueño;
 
-    void Awake() 
+    protected virtual void Awake() 
     { 
         col = GetComponent<Collider2D>(); 
         rb = GetComponent<Rigidbody2D>();
-        usosRestantes = usosMaximos; 
+        
+        // Leemos los usos desde la tarjetita de stats
+        if (stats != null) usosRestantes = stats.usosMaximos; 
+        
         if (rb != null) rb.isKinematic = true;
+        if (col != null) col.isTrigger = true; 
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    // Regla universal: Todas las armas se recogen igual
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
-        if (haSidoRecogida || estaAtacando) return;
-
-        if (collision.gameObject.CompareTag("Player"))
+        if (!haSidoRecogida && !estaAtacando)
         {
-            PlayerCombat combat = collision.gameObject.GetComponent<PlayerCombat>();
-            if (combat != null && combat.armaActual == null)
+            if (collision.CompareTag("Player"))
             {
-                combat.EquiparArma(this);
+                PlayerCombat combat = collision.GetComponent<PlayerCombat>();
+                if (combat != null && combat.armaActual == null)
+                {
+                    combat.EquiparArma(this);
+                }
             }
         }
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (!estaAtacando || tipo != TipoDeArma.Bumeran) return;
-
-        if (collision.CompareTag("Player") && collision.gameObject != dueño.gameObject)
-        {
-            PlayerAbility hab = collision.GetComponent<PlayerAbility>();
-            if (hab != null && hab.isShieldActive) return; 
-
-            PlayerMovement victima = collision.GetComponent<PlayerMovement>();
-            if (victima != null)
-            {
-                float dirX = Mathf.Sign(victima.transform.position.x - transform.position.x);
-                Vector2 fuerza = new Vector2(dirX * 1.5f, 1f).normalized * fuerzaGolpe;
-                victima.ApplyKnockback(fuerza);
-            }
-        }
-    }
-
-    public void AlEquipar(Transform mano, PlayerCombat nuevoDueño)
+    public virtual void AlEquipar(Transform mano, PlayerCombat nuevoDueño)
     {
         haSidoRecogida = true;
         estaAtacando = false;
-        col.enabled = false; 
+        if (col != null) col.enabled = false; 
         
         if (rb != null) { rb.isKinematic = true; rb.velocity = Vector2.zero; }
         
@@ -88,86 +60,22 @@ public class Weapon : MonoBehaviour
         transform.localRotation = Quaternion.identity;
     }
 
-    public void UsarArma()
-    {
-        if (estaAtacando) return; 
+    // ¡EL POLIMORFISMO!: Obligamos a que cada arma diferente programe su propio ataque
+    public abstract void UsarArma();
 
-        if (tipo == TipoDeArma.Bumeran) StartCoroutine(RutinaBumeran());
-        else if (tipo == TipoDeArma.MazoError) StartCoroutine(RutinaMazo());
-    }
-
-    IEnumerator RutinaBumeran()
-    {
-        estaAtacando = true;
-        col.enabled = true;
-        col.isTrigger = true;
-        transform.SetParent(null);
-
-        float direccionX = Mathf.Sign(manoDelJugador.lossyScale.x);
-        Vector3 direccionVuelo = new Vector3(direccionX, 0, 0);
-
-        float tiempo = 0;
-        while (tiempo < tiempoDeIda)
-        {
-            transform.position += direccionVuelo * velocidadLanzamiento * Time.deltaTime;
-            transform.Rotate(0, 0, velocidadGiro * Time.deltaTime * -direccionX);
-            tiempo += Time.deltaTime;
-            yield return null; 
-        }
-
-        while (Vector3.Distance(transform.position, manoDelJugador.position) > 0.5f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, manoDelJugador.position, velocidadLanzamiento * Time.deltaTime);
-            transform.Rotate(0, 0, velocidadGiro * Time.deltaTime * -direccionX);
-            yield return null;
-        }
-
-        ConsumirUso();
-    }
-
-    IEnumerator RutinaMazo()
-    {
-        estaAtacando = true;
-
-        float direccionX = Mathf.Sign(manoDelJugador.lossyScale.x);
-        transform.localRotation = Quaternion.Euler(0, 0, -90 * direccionX);
-
-        Collider2D[] golpeados = Physics2D.OverlapCircleAll(transform.position, radioGolpe);
-        foreach (Collider2D objetivo in golpeados)
-        {
-            if (objetivo.CompareTag("Player") && objetivo.gameObject != dueño.gameObject)
-            {
-                PlayerAbility hab = objetivo.GetComponent<PlayerAbility>();
-                if (hab != null && hab.isShieldActive) continue; 
-
-                PlayerMovement victima = objetivo.GetComponent<PlayerMovement>();
-                if (victima != null)
-                {
-                    float dirX = Mathf.Sign(victima.transform.position.x - transform.position.x);
-                    victima.ApplyKnockback(new Vector2(dirX * 1.5f, 1f).normalized * fuerzaGolpe);
-                    victima.InvertirControles(duracionError);
-                }
-            }
-        }
-
-        yield return new WaitForSeconds(0.2f);
-        transform.localRotation = Quaternion.identity;
-        ConsumirUso();
-    }
-
-    private void ConsumirUso()
+    // Regla universal: Todas las armas se desgastan igual
+    protected void ConsumirUso()
     {
         usosRestantes--; 
         if (usosRestantes <= 0)
         {
-            dueño.PerderArma(); 
+            if (dueño != null) dueño.PerderArma(); 
             Destroy(gameObject); 
         }
         else
         {
             estaAtacando = false;
-            col.enabled = false;
-            col.isTrigger = false;
+            if (col != null) col.enabled = false;
             
             if (transform.parent == null) 
             {
@@ -175,15 +83,6 @@ public class Weapon : MonoBehaviour
                 transform.localPosition = Vector3.zero;
                 transform.localRotation = Quaternion.identity;
             }
-        }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        if (tipo == TipoDeArma.MazoError)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, radioGolpe);
         }
     }
 }

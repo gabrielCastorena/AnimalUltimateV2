@@ -1,123 +1,57 @@
 using UnityEngine;
-using System.Collections;
 
 public class PlayerAbility : MonoBehaviour
 {
-    [Header("Datos del Animal")]
-    public AnimalStats currentAnimal;
-
-    [Header("Puntos de Referencia")]
-    public Transform firePoint;
-    public Transform shieldPoint;
-
-    public bool isShieldActive { get; private set; }
-    
-    private bool abilityInUse = false;
-    private Rigidbody2D rb;
-    private SpriteRenderer spriteRenderer;
     private PlayerMovement movement;
-    private Vector3 originalScale;
+    private SpriteRenderer spriteRenderer;
+    private AnimalAbility habilidadActual; // El cerebro hijo
+
+    // Truco: Leer el escudo desde la habilidad actual para no romper Weapon.cs
+    public bool isShieldActive 
+    { 
+        get { return habilidadActual != null && habilidadActual.isShieldActive; } 
+    }
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
         movement = GetComponent<PlayerMovement>();
-        originalScale = transform.localScale;
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
-        UpdateCharacterSprite();
+        // Busca automáticamente el script de habilidad que le pusiste al personaje
+        habilidadActual = GetComponent<AnimalAbility>();
+
+        // Actualizamos el visual al iniciar
+        if (habilidadActual != null && habilidadActual.stats != null)
+        {
+            // 1. Apagamos el SpriteRenderer original del Player para que no estorbe
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.enabled = false;
+            }
+
+            // 2. Instanciamos el nuevo Prefab animado (La Tortuga Ninja)
+            if (habilidadActual.stats.visualPrefab != null)
+            {
+                // Instantiate crea el objeto, y al pasarle 'transform', lo hace hijo de este Player automáticamente
+                GameObject visualInstance = Instantiate(habilidadActual.stats.visualPrefab, transform);
+                
+                // Nos aseguramos de que quede perfectamente centrado
+                visualInstance.transform.localPosition = Vector3.zero;
+            }
+        }
     }
 
     void Update()
     {
         if (movement != null && movement.isStunned) return;
-        HandleAbilityInput();
-    }
 
-    void UpdateCharacterSprite()
-    {
-        if (currentAnimal != null && spriteRenderer != null)
-        {
-            spriteRenderer.sprite = currentAnimal.characterSprite;
-        }
-    }
-
-    void HandleAbilityInput()
-    {
         bool useAbilityPressed = (movement.playerID == 1 && Input.GetKeyDown(KeyCode.W)) ||
                                  (movement.playerID == 2 && Input.GetKeyDown(KeyCode.UpArrow));
 
-        if (useAbilityPressed) ActivateAbility();
-    }
-
-    public void ActivateAbility()
-    {
-        if (abilityInUse || currentAnimal == null) return;
-
-        switch (currentAnimal.tipoHabilidad)
+        // Si presionas el botón, le delegamos el trabajo a la habilidad específica
+        if (useAbilityPressed && habilidadActual != null && !habilidadActual.abilityInUse)
         {
-            case TipoHabilidad.LanzarHuevo: StartCoroutine(ChickenAbility()); break;
-            case TipoHabilidad.EscudoOveja: StartCoroutine(SheepAbility()); break;
-            case TipoHabilidad.EncogerRata: StartCoroutine(RatAbility()); break;
-            case TipoHabilidad.FlotarPez: StartCoroutine(FishAbility()); break;
+            habilidadActual.ActivarHabilidad();
         }
-    }
-
-    IEnumerator ChickenAbility()
-    {
-        abilityInUse = true;
-        GameObject activeObject = Instantiate(currentAnimal.abilityPrefab, firePoint.position, Quaternion.identity);
-        Rigidbody2D eggRb = activeObject.GetComponent<Rigidbody2D>();
-
-        if (eggRb != null) eggRb.velocity = Vector2.down * currentAnimal.abilityForce;
-
-        yield return new WaitForSeconds(currentAnimal.abilityDuration); 
-        abilityInUse = false;
-    }
-
-    IEnumerator SheepAbility()
-    {
-        abilityInUse = true;
-        isShieldActive = true;
-        GameObject activeObject = Instantiate(currentAnimal.abilityPrefab, shieldPoint.position, Quaternion.identity, transform);
-
-        yield return new WaitForSeconds(currentAnimal.abilityDuration);
-
-        if (activeObject != null) Destroy(activeObject);
-        isShieldActive = false;
-        abilityInUse = false;
-    }
-
-    IEnumerator RatAbility()
-    {
-        abilityInUse = true;
-        float signX = Mathf.Sign(transform.localScale.x);
-        float smallScale = originalScale.y * 0.5f;
-        transform.localScale = new Vector3(signX * smallScale, smallScale, originalScale.z);
-
-        yield return new WaitForSeconds(currentAnimal.abilityDuration);
-
-        signX = Mathf.Sign(transform.localScale.x);
-        transform.localScale = new Vector3(signX * originalScale.y, originalScale.y, originalScale.z);
-        abilityInUse = false;
-    }
-
-    IEnumerator FishAbility()
-    {
-        abilityInUse = true;
-        float savedGravityScale = rb.gravityScale;
-        rb.gravityScale = 0f;
-
-        float timer = 0f;
-        while (timer < currentAnimal.abilityDuration)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, currentAnimal.abilityForce);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        rb.gravityScale = savedGravityScale;
-        rb.velocity = new Vector2(rb.velocity.x, 0f);
-        abilityInUse = false;
     }
 }

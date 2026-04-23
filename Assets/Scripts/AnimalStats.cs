@@ -1,17 +1,18 @@
 using UnityEngine;
 
-public enum TipoHabilidad { LanzarHuevo, EscudoOveja, EncogerRata, FlotarPez }
-
-[CreateAssetMenu(fileName = "NuevoAnimal", menuName = "Juego/Estadisticas de Animal")]
-public class AnimalStats : ScriptableObject
+[CreateAssetMenu(fileName = "NuevaStatAnimal", menuName = "Stats/Animal Individual")]
+// El nombre de la clase ahora coincide con el archivo AnimalStats.cs
+public class AnimalStats : ScriptableObject 
 {
     [Header("Información General")]
     public string animalName;
-    public Sprite characterSprite;
-
+    
+    // ANTES: public Sprite characterSprite;
+    // AHORA: Guardamos el PREFAB completo (la TortugaNinja con su Animator)
+    public GameObject visualPrefab; 
+    
     [Header("Configuración de Habilidad")]
-    public TipoHabilidad tipoHabilidad;  
-    public GameObject abilityPrefab;     
-    public float abilityForce = 10f;     
-    public float abilityDuration = 3f;   
+    public GameObject abilityPrefab;
+    public float abilityForce;
+    public float abilityDuration;
 }

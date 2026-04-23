@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdf1eb8d18832b97fa7217b70c68cb64, type: 3}
-  m_Name: UniversalRenderPipelineGlobalSettings
+  m_Script: {fileID: 11500000, guid: 7e0013dcab4f535ba9a0b508de0523db, type: 3}
+  m_Name: Stats_Bumeran
   m_EditorClassIdentifier: 
-  animalName: 
-  characterSprite: {fileID: 0}
-  abilityPrefab: {fileID: 0}
-  abilityForce: 10
-  abilityDuration: 3
+  nombreArma: Bumeran
+  usosMaximos: 3
+  fuerzaGolpe: 20
