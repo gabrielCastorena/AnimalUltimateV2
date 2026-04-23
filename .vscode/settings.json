@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "EduardoProyecto.sln"
+    "dotnet.defaultSolution": "AnimalUltimateV2.sln"
 }
