@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-// Clase abstracta: Obliga a todos los animales a tener la función ActivarHabilidad
+// Obliga a todos los animales a tener la función ActivarHabilidad
 public abstract class AnimalAbility : MonoBehaviour
 {
     [Header("Estadísticas")]
@@ -20,6 +20,5 @@ public abstract class AnimalAbility : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // El polimorfismo: Cada animal programará su propia magia aquí
     public abstract void ActivarHabilidad();
 }

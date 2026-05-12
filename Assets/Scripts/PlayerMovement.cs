@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded;
 
     private Rigidbody2D rb;
-    private Animator anim; // Apuntará al Animator del hijo (la tortuga)
+    private Animator anim; 
 
     private float knockbackCounter;
     private float originalAngularDrag;
@@ -30,9 +30,6 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        
-        // CORRECCIÓN: Como Tortuguita ya es hijo en la jerarquía desde el inicio, 
-        // buscamos el Animator directamente aquí una sola vez. Es más eficiente.
         anim = GetComponentInChildren<Animator>();
         
         originalAngularDrag = rb.angularDrag;
@@ -109,12 +106,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (moveInput != 0)
         {
-            // Tu lógica de flip sigue perfecta
             float s = Mathf.Abs(transform.localScale.y);
             transform.localScale = new Vector3(Mathf.Sign(moveInput) * s, s, transform.localScale.z);
         }
 
-        // Se activa el ciclo de caminar si hay input
         if (anim != null) anim.SetBool("isWalking", moveInput != 0);
     }
 

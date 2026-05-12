@@ -14,10 +14,9 @@ public class WeaponBumeran : Weapon
         StartCoroutine(RutinaBumeran());
     }
 
-    // El bumerán necesita extender la función de choque para hacer daño al volar
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
-        base.OnTriggerEnter2D(collision); // Ejecuta la recolección de la clase padre
+        base.OnTriggerEnter2D(collision); // Ejecuta la recolección 
 
         if (estaAtacando && collision.CompareTag("Player") && collision.gameObject != dueño.gameObject)
         {

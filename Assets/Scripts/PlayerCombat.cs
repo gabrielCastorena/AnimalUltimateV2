@@ -18,7 +18,7 @@ public class PlayerCombat : MonoBehaviour
         if (armaActual != null && movement != null && !movement.isStunned)
         {
             if ((movement.playerID == 1 && Input.GetKeyDown(KeyCode.F)) ||
-                (movement.playerID == 2 && Input.GetKeyDown(KeyCode.RightControl)))
+                (movement.playerID == 2 && Input.GetKeyDown(KeyCode.DownArrow)))
             {
                 armaActual.UsarArma();
             }

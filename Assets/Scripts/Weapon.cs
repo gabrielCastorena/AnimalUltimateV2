@@ -1,12 +1,11 @@
 using UnityEngine;
 
-// Al ser abstracta, dicta las reglas, pero las hijas hacen el trabajo sucio
 public abstract class Weapon : MonoBehaviour
 {
     [Header("Estadísticas Base")]
     public WeaponStats stats; // Aquí conectaremos el ScriptableObject
 
-    // Las variables son 'protected' para que solo las clases hijas (bumerán/mazo) puedan usarlas
+    
     protected int usosRestantes;  
     protected bool haSidoRecogida = false;
     protected bool estaAtacando = false; 
@@ -21,14 +20,13 @@ public abstract class Weapon : MonoBehaviour
         col = GetComponent<Collider2D>(); 
         rb = GetComponent<Rigidbody2D>();
         
-        // Leemos los usos desde la tarjetita de stats
         if (stats != null) usosRestantes = stats.usosMaximos; 
         
         if (rb != null) rb.isKinematic = true;
         if (col != null) col.isTrigger = true; 
     }
 
-    // Regla universal: Todas las armas se recogen igual
+    // Todas las armas se recogen igual
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if (!haSidoRecogida && !estaAtacando)
@@ -60,10 +58,8 @@ public abstract class Weapon : MonoBehaviour
         transform.localRotation = Quaternion.identity;
     }
 
-    // ¡EL POLIMORFISMO!: Obligamos a que cada arma diferente programe su propio ataque
     public abstract void UsarArma();
 
-    // Regla universal: Todas las armas se desgastan igual
     protected void ConsumirUso()
     {
         usosRestantes--; 
